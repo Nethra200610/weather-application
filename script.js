@@ -1,25 +1,24 @@
 async function getWeather() {
 
-    const city =
-        document.getElementById("cityInput").value.trim();
+    const city = document.getElementById("cityInput").value.trim();
+    const result = document.getElementById("weatherResult");
 
-    const result =
-        document.getElementById("weatherResult");
-
-    if(city === ""){
+    if (city === "") {
         result.innerHTML = "Please enter a city";
         return;
     }
 
+    const apiKey = "0ac05e9cdf280039217d6930c4ebdd59";
+
     try {
 
-        const response =
-            await fetch(`/weather?city=${city}`);
+        const response = await fetch(
+            `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`
+        );
 
-        const data =
-            await response.json();
+        const data = await response.json();
 
-        if(data.message){
+        if (data.cod != 200) {
             result.innerHTML = data.message;
             return;
         }
@@ -33,10 +32,7 @@ async function getWeather() {
         `;
 
     } catch (error) {
-    console.log(error.response?.data || error.message);
-
-    res.status(400).json({
-        message: error.response?.data?.message || error.message
-    });
-}
+        console.log(error);
+        result.innerHTML = "Error fetching weather data";
+    }
 }
